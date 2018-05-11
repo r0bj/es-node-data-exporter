@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	// "fmt"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/prometheus/client_golang/prometheus"
 	"gopkg.in/yaml.v2"
@@ -14,7 +12,7 @@ import (
 )
 
 const (
-	ver string = "0.11"
+	ver string = "0.12"
 	logDateLayout string = "2006-01-02 15:04:05"
 )
 
