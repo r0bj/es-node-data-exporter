@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	ver string = "0.10"
+	ver string = "0.11"
 	logDateLayout string = "2006-01-02 15:04:05"
 )
 
@@ -40,7 +40,7 @@ var (
 	},
 	[]string{"cluster"})
 	dataNodesCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "elasticsearch_datanodes_target_count",
+		Name: "elasticsearch_data_nodes_target_count",
 		Help: "Elasticsearch desirable number of data nodes.",
 	},
 	[]string{"cluster"})
