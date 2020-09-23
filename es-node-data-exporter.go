@@ -5,14 +5,16 @@ import (
 	"io/ioutil"
 	"os"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gopkg.in/yaml.v2"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 const (
-	ver string = "0.12"
+	ver string = "0.13"
 	logDateLayout string = "2006-01-02 15:04:05"
 )
 
@@ -32,22 +34,17 @@ type Config struct {
 }
 
 var (
-	nodesCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+	nodesCount = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "elasticsearch_nodes_target_count",
 		Help: "Elasticsearch desirable number of nodes.",
 	},
 	[]string{"cluster"})
-	dataNodesCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+	dataNodesCount = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "elasticsearch_data_nodes_target_count",
 		Help: "Elasticsearch desirable number of data nodes.",
 	},
 	[]string{"cluster"})
 )
-
-func init() {
-	prometheus.MustRegister(nodesCount)
-	prometheus.MustRegister(dataNodesCount)
-}
 
 func parseConfig(file string) (Config, error) {
 	var config Config
@@ -76,7 +73,7 @@ func startUp(listenAddress, configFile, metricsPath string) {
 		dataNodesCount.WithLabelValues(cluster.Name).Set(float64(cluster.DataNodesCount))
 	}
 
-	http.Handle(metricsPath, prometheus.Handler())
+	http.Handle(metricsPath, promhttp.Handler())
 	log.Infof("Starting, version %s, binding to %s", ver, listenAddress)
 	http.ListenAndServe(listenAddress, nil)
 }
